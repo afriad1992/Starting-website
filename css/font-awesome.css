@@ -806,12 +806,14 @@
 .fa-twitter:before {
     content: "\f099";
     color:black;
+    padding-right: 10px;
 }
 
 .fa-facebook-f:before,
 .fa-facebook:before {
     content: "\f09a";
     color:black;
+    padding-right: 10px;
 }
 
 .fa-github:before {
@@ -1584,6 +1586,7 @@
 .fa-instagram:before {
     content: "\f16d";
     color:black;
+    padding-right: 10px;
 }
 
 .fa-flickr:before {
@@ -1645,6 +1648,7 @@
 .fa-dribbble:before {
     content: "\f17d";
     color:black;
+    padding-right: 10px;
 }
 
 .fa-skype:before {
