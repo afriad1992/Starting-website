@@ -1,7 +1,8 @@
-/*! jQuery v2.1.0 | (c) 2005, 2014 jQuery Foundation, Inc. | jquery.org/license */ 
-! function(a, b) {
+/*! jQuery v2.1.0 | (c) 2005, 2014 jQuery Foundation, Inc. | jquery.org/license */ ! function(a, b) {
     "object" == typeof module && "object" == typeof module.exports ? module.exports = a.document ? b(a, !0) : function(a) {
-            } : b(a)
+        if (!a.document) throw new Error("jQuery requires a window with a document");
+        return b(a)
+    } : b(a)
 }("undefined" != typeof window ? window : this, function(a, b) {
     var c = [],
         d = c.slice,
@@ -41,7 +42,11 @@
         each: function(a, b) {
             return o.each(this, a, b)
         },
-       
+        map: function(a) {
+            return this.pushStack(o.map(this, function(b, c) {
+                return a.call(b, c, b)
+            }))
+        },
         slice: function() {
             return this.pushStack(d.apply(this, arguments))
         },
@@ -895,6 +900,21 @@
         v = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
         w = /^.[^:#\[\.,]*$/;
 
+    function x(a, b, c) {
+        if (o.isFunction(b)) return o.grep(a, function(a, d) {
+            return !!b.call(a, d, a) !== c
+        });
+        if (b.nodeType) return o.grep(a, function(a) {
+            return a === b !== c
+        });
+        if ("string" == typeof b) {
+            if (w.test(b)) return o.filter(b, a, c);
+            b = o.filter(b, a)
+        }
+        return o.grep(a, function(a) {
+            return g.call(b, a) >= 0 !== c
+        })
+    }
     o.filter = function(a, b, c) {
         var d = b[0];
         return c && (a = ":not(" + a + ")"), 1 === b.length && 1 === d.nodeType ? o.find.matchesSelector(d, a) ? [d] : [] : o.find.matches(a, o.grep(b, function(a) {
@@ -989,7 +1009,10 @@
         }
     });
 
-   
+    function D(a, b) {
+        while ((a = a[b]) && 1 !== a.nodeType);
+        return a
+    }
     o.each({
         parent: function(a) {
             var b = a.parentNode;
@@ -1068,7 +1091,12 @@
                     }
                     return this
                 },
-               
+                remove: function() {
+                    return h && o.each(arguments, function(a, b) {
+                        var c;
+                        while ((c = o.inArray(b, h, c)) > -1) h.splice(c, 1), d && (f >= c && f--, g >= c && g--)
+                    }), this
+                },
                 has: function(a) {
                     return a ? o.inArray(a, h) > -1 : !(!h || !h.length)
                 },
@@ -1256,7 +1284,17 @@
         N = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
         O = /([A-Z])/g;
 
-   
+    function P(a, b, c) {
+        var d;
+        if (void 0 === c && 1 === a.nodeType)
+            if (d = "data-" + b.replace(O, "-$1").toLowerCase(), c = a.getAttribute(d), "string" == typeof c) {
+                try {
+                    c = "true" === c ? !0 : "false" === c ? !1 : "null" === c ? null : +c + "" === c ? +c : N.test(c) ? o.parseJSON(c) : c
+                } catch (e) {}
+                M.set(a, b, c)
+            } else c = void 0;
+        return c
+    }
     o.extend({
         hasData: function(a) {
             return M.hasData(a) || L.hasData(a)
@@ -1375,13 +1413,19 @@
         X = /^(?:focusinfocus|focusoutblur)$/,
         Y = /^([^.]*)(?:\.(.+)|)$/;
 
-   
+    function Z() {
+        return !0
+    }
 
     function $() {
         return !1
     }
 
-   
+    function _() {
+        try {
+            return m.activeElement
+        } catch (a) {}
+    }
     o.event = {
         global: {},
         add: function(a, b, c, d, e) {
@@ -1635,7 +1679,44 @@
         };
     ib.optgroup = ib.option, ib.tbody = ib.tfoot = ib.colgroup = ib.caption = ib.thead, ib.th = ib.td;
 
+    function jb(a, b) {
+        return o.nodeName(a, "table") && o.nodeName(11 !== b.nodeType ? b : b.firstChild, "tr") ? a.getElementsByTagName("tbody")[0] || a.appendChild(a.ownerDocument.createElement("tbody")) : a
+    }
 
+    function kb(a) {
+        return a.type = (null !== a.getAttribute("type")) + "/" + a.type, a
+    }
+
+    function lb(a) {
+        var b = gb.exec(a.type);
+        return b ? a.type = b[1] : a.removeAttribute("type"), a
+    }
+
+    function mb(a, b) {
+        for (var c = 0, d = a.length; d > c; c++) L.set(a[c], "globalEval", !b || L.get(b[c], "globalEval"))
+    }
+
+    function nb(a, b) {
+        var c, d, e, f, g, h, i, j;
+        if (1 === b.nodeType) {
+            if (L.hasData(a) && (f = L.access(a), g = L.set(b, f), j = f.events)) {
+                delete g.handle, g.events = {};
+                for (e in j)
+                    for (c = 0, d = j[e].length; d > c; c++) o.event.add(b, e, j[e][c])
+            }
+            M.hasData(a) && (h = M.access(a), i = o.extend({}, h), M.set(b, i))
+        }
+    }
+
+    function ob(a, b) {
+        var c = a.getElementsByTagName ? a.getElementsByTagName(b || "*") : a.querySelectorAll ? a.querySelectorAll(b || "*") : [];
+        return void 0 === b || b && o.nodeName(a, b) ? o.merge([a], c) : c
+    }
+
+    function pb(a, b) {
+        var c = b.nodeName.toLowerCase();
+        "input" === c && T.test(a.type) ? b.checked = a.checked : ("input" === c || "textarea" === c) && (b.defaultValue = a.defaultValue)
+    }
     o.extend({
         clone: function(a, b, c) {
             var d, e, f, g, h = a.cloneNode(!0),
