@@ -16,7 +16,9 @@ html {
 body {
     margin: 0
 }
-
+.navbar-toggle .icon-bar+.icon-bar {
+    margin-top: 4px
+}
 .navbar-toggle .icon-bar {
     display: block;
     width: 22px;
