@@ -12,7 +12,14 @@ button {
     transition: all .3s ease-in-out;
     outline: none!important;
 }
-
+#logo{
+    width: 100px;
+    height: 100px;
+}
+#logo1{
+    width: 205px;
+    height: 40px;
+}
 a:hover {
     text-decoration: none;
     cursor: pointer;
